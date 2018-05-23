@@ -1,6 +1,6 @@
 
-##Usage: 
-It's run every 20 mins to send AWS SNS
+## Usage: 
+on slack, type `/whois email_address` to get a Gigwalker's info.
 
 ## Technical details
 Now it's built with legacy customer integrations of slash command,

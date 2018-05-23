@@ -1,5 +1,4 @@
-
-##Usage: 
+## Usage: 
 It's run every 20 mins to send SMS and Emails through AWS SNS
 
 ## Technical details

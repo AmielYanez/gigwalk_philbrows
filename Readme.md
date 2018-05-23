@@ -8,7 +8,7 @@
 ## Main idea: 
 Writing some microservice tools that could help CSM and support team to perform tasks, such that the tools could be deployed and used by end user quickly and could be thrown away with a little cost-- ideally 100~200 lines of code and 8-16 hours dev. time and those are not needed to be 100% robust.
 
-###Example Use cases: 
+### Example Use cases: 
 1. Implemented: Gigwalkers lookup, given a Gigwalker email, it will look up Gigwalker's assigned certifications and his applied tickets.
 2. Implemented: Getting mongo ES queue size and send out an alert to engineers.
 3. Unblacklist Gigwalkers, if a Gigwalker is blacklisted, there's no way to unblock him (neither API/FE able to do so)-- the only way as of now is to stamped the application status on DB manually by BE engineers
