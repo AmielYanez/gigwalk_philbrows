@@ -2,6 +2,7 @@ import os
 from gc import gc
 from models import Projects, Tickets
 FILE_KEY = os.environ['FILE_KEY']
+SHARE_ACCOUNTS = os.environ['SHARE_ACCOUNTS']
 
 def generate_file(data, filename):
     sh = gc.create(filename)
@@ -9,6 +10,11 @@ def generate_file(data, filename):
     sh.insert_row(columns)
     for row in data:
         sh.insert_row(row)
+
+def share_file(sh):
+    emails = SHARE_ACCOUNTS.split(',')
+    for email in emails:
+        sh.share(email, perm_type='user', role='writer')
 
 def priority_list_by_project(project):
 
