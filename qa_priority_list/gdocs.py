@@ -23,6 +23,7 @@ def open_sh(file_key):
 
 def generate_and_share_file(data, filename):
       sh = gc.create(filename)
+
       columns = [
           'Customer_Email',
           'Project_Title',
@@ -36,9 +37,10 @@ def generate_and_share_file(data, filename):
           'TicketUrl',
           'Worker_id'
       ]
-      sh.insert_row(columns)
+      ws = sh.add_worksheet('QA Priority List', len(data) + 1, len(columns))
+      ws.append_row(columns)
       for row in data:
-          sh.insert_row(row)
+          ws.append_row(row)
 
       share_file(sh)
 
