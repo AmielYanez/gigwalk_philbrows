@@ -5,6 +5,7 @@ DB_HOST = os.environ.get('DB_HOST')
 DB_NAME = os.environ.get('DB_NAME')
 DB_USER = os.environ.get('DB_USER')
 DB_PWD = os.environ.get('DB_PWD')
+LIMIT = os.environ.get('LIMIT', 2200)
 
 class Model:
     def __init__(self):
@@ -33,5 +34,44 @@ class Projects(Model):
 class Tickets(Model):
 
     def get_tickets_by_project_id(self, project_id):
-        query = "SELECT * FROM tickets where organization_subscription_id = {}".format(project_id)
+        query = """
+        SELECT
+        Customer.email as Customer_email,
+        Project.title as Campain,
+        CONCAT(
+         'https://app.gigwalk.com/projects/',
+         Project.organization_id,
+         '/active/',
+         Project.id
+        ) as ProjectUrl,
+        CASE
+          WHEN Payout.status = 'payout' THEN Payout.date_created + INTERVAL '10 MINUTE'
+          ELSE Ticket.date_submitted
+        END as QA_deadline_date,
+        CASE
+          WHEN Project.end_date IS NOT NULL THEN Project.end_date
+          ELSE Ticket.due_date
+        END as Project_due_date,
+        Ticket.date_submitted as Ticket_submitted_date,
+        Location.title as Ticket_location,
+        Location.address as Ticket_address,
+        Location.administrative_area_level_1 as Ticket_state,
+        CONCAT(
+          'https://app.gigwalk.com/tickets/',
+          Project.organization_id,
+          '/detail/',
+          Ticket.id
+        ) as TicketUrl,
+        Worker.id as Worker_id
+        FROM
+        tickets as Ticket
+        LEFT JOIN locations as Location on Location.id = Ticket.location_id
+        LEFT JOIN organization_subscriptions as Project on Project.id = Ticket.organization_subscription_id
+        LEFT JOIN payouts as Payout on Payout.ticket_id = Ticket.id
+        LEFT JOIN customers as Customer on Customer.id = Project.created_customer_id
+        LEFT JOIN customers as Worker on Worker.id = Ticket.assigned_customer_id
+        WHERE Ticket.status = 'SUBMITTED' and Project.id = {}
+        ORDER BY QA_deadline_date, Ticket_submitted_date LIMIT {};
+        """
+        query = query.format(project_id, LIMIT)
         return self._execute_query(query)
