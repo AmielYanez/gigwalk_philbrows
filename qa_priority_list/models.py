@@ -7,6 +7,8 @@ DB_USER = os.environ.get('DB_USER')
 DB_PWD = os.environ.get('DB_PWD')
 LIMIT = os.environ.get('LIMIT', 2200)
 
+__all__ = ['Projects', 'Tickets']
+
 class Model:
     def __init__(self):
         self.conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PWD)
@@ -14,7 +16,7 @@ class Model:
     def _execute_query(self, query):
         data = []
         cur = self.conn.cursor()
-        cur.execute()
+        cur.execute(query)
         if cur.rowcount == 0:
             return []
         row = cur.fetchone()
@@ -36,8 +38,8 @@ class Tickets(Model):
     def get_tickets_by_project_id(self, project_id):
         query = """
         SELECT
-        Customer.email as Customer_email,
-        Project.title as Campain,
+        Customer.email,
+        Project.title,
         CONCAT(
          'https://app.gigwalk.com/projects/',
          Project.organization_id,
