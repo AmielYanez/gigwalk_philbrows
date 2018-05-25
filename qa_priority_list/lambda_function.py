@@ -7,7 +7,8 @@ FILE_KEY = os.environ['FILE_KEY']
 def priority_list_by_project(project):
 
     tickets = Tickets().get_tickets_by_project_id(project[0])
-    gdocs.generate_and_share_file(tickets, 'QA_PRIORITY_LIST_{}'.format(project[0]))
+    if tickets:
+        gdocs.generate_and_share_file(tickets, 'QA_PRIORITY_LIST_{}'.format(project[0]))
 
 
 def lambda_handler(event, context):

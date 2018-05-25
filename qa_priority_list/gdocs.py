@@ -18,8 +18,10 @@ __all__ = ['GC']
 credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_json, scope)
 gc = gspread.authorize(credentials)
 
+
 def open_sh(file_key):
     return gc.open_by_key(file_key).sheet1
+
 
 def generate_and_share_file(data, filename):
       sh = gc.create(filename)
@@ -37,12 +39,15 @@ def generate_and_share_file(data, filename):
           'TicketUrl',
           'Worker_id'
       ]
-      ws = sh.add_worksheet('QA Priority List', len(data) + 1, len(columns))
+      ws = sh.get_worksheet(0)
+      ws.add_cols(len(columns))
+      ws.add_rows(len(data) + 1)
       ws.append_row(columns)
       for row in data:
-          ws.append_row(row)
+          ws.append_row([str(v) for v in row])
 
       share_file(sh)
+
 
 def share_file(sh):
   emails = SHARE_ACCOUNTS.split(',')
