@@ -4,20 +4,26 @@ from models import Projects, Tickets
 FILE_KEY = os.environ['FILE_KEY']
 
 
-def priority_list_by_project(project):
-
-    tickets = Tickets().get_tickets_by_project_id(project[0])
+def priority_list(projects):
+    tickets = []
+    for project in projects:
+        _tickets = Tickets().get_tickets_by_project_id(project[0])
+        if _tickets:
+            tickets += _tickets
     if tickets:
-        gdocs.generate_and_share_file(tickets, 'QA_PRIORITY_LIST_{}'.format(project[0]))
+        gdocs.generate_file(tickets)
 
 
 def lambda_handler(event, context):
 
-    wks = gdocs.open_sh(FILE_KEY)
-    project_ids = wks.col_values(1)
+
+    project_ids = gdocs.get_project_ids(FILE_KEY)
     if not project_ids:
         return "No projects found"
-    projects = Projects().get_projects_by_id_list(project_ids)
-    for project in projects:
-        priority_list_by_project(project)
+    print project_ids
+    projects = Projects().get_projects_by_id_list([str(_id) for _id in project_ids])
+    priority_list(projects)
     return 'Done'
+
+if __name__ == '__main__':
+    lambda_handler(1,2)
