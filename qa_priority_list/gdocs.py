@@ -1,5 +1,6 @@
 from __future__ import print_function
-import pandas as pd
+import csv
+# import pandas as pd
 import datetime
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
@@ -68,6 +69,11 @@ def generate_file(data):
         'TicketUrl',
         'Worker_id'
     ]
-    df = pd.DataFrame(data, columns=columns)
-    df.to_csv(CSV_FILE, index=False)
+    with open(CSV_FILE, 'wb') as csv_file:
+        wr = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
+        wr.writerow(columns)
+        for row in data:
+            wr.writerow(row)
+    # df = pd.DataFrame(data, columns=columns)
+    # df.to_csv(CSV_FILE, index=False)
     upload_file()
