@@ -1,5 +1,7 @@
 from __future__ import print_function
 import csv
+import os
+from shutil import copyfile
 # import pandas as pd
 import datetime
 from apiclient.discovery import build
@@ -7,13 +9,16 @@ from apiclient.http import MediaFileUpload
 from httplib2 import Http
 from oauth2client import file, client, tools
 
+copyfile('credentials.json', '/tmp/credentials.json')
+copyfile('client_secret.json', '/tmp/client_secret.json')
+
 # Setup the Drive v3 API
-CSV_FILE = 'qa_list.csv'
+CSV_FILE = '/tmp/qa_list.csv'
 SCOPES = ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/spreadsheets.readonly']
-store = file.Storage('credentials.json')
+store = file.Storage('/tmp/credentials.json')
 creds = store.get()
 if not creds or creds.invalid:
-    flow = client.flow_from_clientsecrets('client_secret.json', SCOPES)
+    flow = client.flow_from_clientsecrets('/tmp/client_secret.json', SCOPES)
     creds = tools.run_flow(flow, store)
 httpObj = creds.authorize(Http())
 
