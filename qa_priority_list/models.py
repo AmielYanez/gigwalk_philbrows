@@ -23,6 +23,7 @@ class Model:
         while row is not None:
             data.append(row)
             row = cur.fetchone()
+        cur.close()
         return data
 
 
