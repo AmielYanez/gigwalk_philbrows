@@ -65,6 +65,7 @@ class Tickets(Model):
           '/detail/',
           Ticket.id
         ) as TicketUrl,
+        Ticket.approval_status as Ticket_approval_status,
         Worker.id as Worker_id
         FROM
         tickets as Ticket
